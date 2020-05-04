@@ -1,0 +1,73 @@
+server:
+  port: 8084
+
+
+
+
+mybatis:
+  configuration:
+    # \u4E0B\u5212\u7EBF\u8F6C\u9A7C\u5CF0
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath:META-INF/mappers/*.xml
+  type-aliases-package: com.cxytiandi.sharding.po
+mapper:
+  mappers:
+    - tk.mybatis.mapper.common.Mapper
+  not-empty: true
+  style: camelhump
+  wrap-keyword: "`{0}`"
+  safe-delete: true
+  safe-update: true
+  identity: MYSQL
+pagehelper:
+  auto-dialect: true
+  helper-dialect: mysql
+  reasonable: true
+  params: count=countSql
+
+spring:
+  shardingsphere:
+    datasource:
+      names: ds0,ds1
+      ds0:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/ds_0?characterEncoding=utf-8
+        username: root
+        password: root
+      ds1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/ds_1?characterEncoding=utf-8
+        username: root
+        password: root
+    sharding:
+      tables:
+        #loudong所在节点
+        loudong:
+          actual-data-nodes: ds1.loudong
+        user:
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+          actual-data-nodes: ds0.user_202005,ds0.user_202004,ds0.user_202003
+          table-strategy:
+            standard:
+              sharding-column: create_time
+              precise-algorithm-class-name: com.cxytiandi.sharding.algorithm.MyPreciseShardingAlgorithm
+              range-algorithm-class-name: com.cxytiandi.sharding.algorithm.TimeRangeShardingAlgorithm
+#            inline:
+#              sharding-column: id
+#              algorithm-expression: user_$->{id % 3}
+      #      不分库不分表的数据源配置
+#      default-data-source-name: ds0
+    props:
+      sql:
+        show: true
+
+
+#  spring.shardingsphere.sharding.default-database-strategy.inline.sharding-column=id
+# inline 表达式只支持单分片键
+#spring.shardingsphere.sharding.tables.user.table-strategy.inline.sharding-column=id
+#spring.shardingsphere.sharding.tables.user.table-strategy.inline.algorithm-expression=user_${id.longValue() % 4}
+#  spring.shardingsphere.sharding.tables.user.table-strategy.inline.algorithm-expression=user_$->{id % 3}

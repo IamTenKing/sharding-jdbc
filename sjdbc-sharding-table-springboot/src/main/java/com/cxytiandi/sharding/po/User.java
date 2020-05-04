@@ -1,45 +1,28 @@
 package com.cxytiandi.sharding.po;
 
+import lombok.Data;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 分表
  * @author yinjihuan
  *
  */
+
+@Data
 public class User implements Serializable {
 
 	private static final long serialVersionUID = -1205226416664488559L;
-	
+
 	private Long id;
 
 	private String city = "";
-	
+
 	private String name = "";
 
-	public Long getId() {
-		return id;
-	}
+	private Date createTime;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
 
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	
 }

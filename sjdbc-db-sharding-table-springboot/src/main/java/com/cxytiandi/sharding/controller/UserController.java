@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cxytiandi.sharding.po.User;
 import com.cxytiandi.sharding.service.UserService;
 
+import java.util.Date;
+
 @RestController
 public class UserController {
 	
@@ -25,6 +27,7 @@ public class UserController {
 			User user = new User();
 			user.setCity("深圳");
 			user.setName("李四");
+			user.setCreateTime(new Date());
 			userService.add(user);
 		}
 		return "success";
